@@ -65,7 +65,12 @@
          
       ELSE
          CALL MIX(mass0,mass,age,kstar,zpars,krol)
+
+      WRITE(*,*) 'Dopo mix', kstar(1), kstar(2)
+
       END IF
+
+
 
       RETURN
 

@@ -282,7 +282,7 @@ AC_ARG_WITH([fdps-prefix],
 	    [fdps_prefix="../FDPS"])
 
 AC_CHECK_FILE(["$fdps_prefix/src/particle_simulator.hpp"],
-	      [INCLUDE=$INCLUDE" -I$fdps_prefix/src"],
+	      [PETAR_INCLUDE=$PETAR_INCLUDE" -I$fdps_prefix/src"],
 	      [AC_MSG_FAILURE([can't find FDPS library, please provide correct PREFIX by using --with-fdps-prefix])])
 
 AC_CHECK_FILE(["$fdps_prefix/src/ps_defs.hpp"],
@@ -301,7 +301,7 @@ AC_ARG_WITH([sdar-prefix],
 	    [sdar_prefix="../SDAR"])
 
 AC_CHECK_FILE(["$sdar_prefix/src/Hermite/hermite_integrator.h"],
-	      [INCLUDE=$INCLUDE" -I$sdar_prefix/src"],
+	      [PETAR_INCLUDE=$PETAR_INCLUDE" -I$sdar_prefix/src"],
 	      [AC_MSG_FAILURE([can't find SDAR library, please provide correct PREFIX by using --with-sdar-prefix])])
 
 # GALPY
@@ -380,6 +380,9 @@ AC_ARG_WITH([external],
                     AC_CHECK_FILE(["$galpy_prefix/potential/potential_c_ext/galpy_potentials.h"],
                                   [GALPY_PATH=$galpy_prefix],
                                   [AC_MSG_FAILURE([can't find Galpy library, please provide correct PREFIX by using --with-galpy-prefix])])
+                    AC_CHECK_FILE(["$galpy_prefix/__init__.py"],
+		                  [GALPY_VERSION=`cut -d'"' -f2 $galpy_prefix/__init__.py`],
+				  [AC_MSG_FAILURE([can't find Galpy __init__.py, which contains the version number])])
                     AC_CHECK_PROG([GSL_CFLAGS],[gsl-config],[`gsl-config --cflags`],[])
                     AC_CHECK_PROG([GSL_LIBS],[gsl-config],[`gsl-config --libs`],[none])
 		    AS_IF([test x"$GSL_LIBS" == xnone],
@@ -469,7 +472,7 @@ AC_SUBST([GPERFLIBS])
 AC_SUBST([GALPY_PATH])
 AC_SUBST([GSL_CFLAGS])
 AC_SUBST([GSL_LIBS])
-AC_SUBST([INCLUDE])
+AC_SUBST([PETAR_INCLUDE])
 AC_SUBST([PROG_NAME])
 AC_SUBST([CXX])
 AC_SUBST([CXXNOMPI])
@@ -478,6 +481,7 @@ AC_SUBST([FDPS_VERSION])
 AC_SUBST([use_fdps_comm])
 AC_SUBST([FCLIBS])
 AC_SUBST([FLIBS])
+AC_SUBST([GALPY_VERSION])
 
 AC_MSG_NOTICE([----------------------Configure Summary--------------------])
 AC_MSG_NOTICE([--Features:])
@@ -498,6 +502,8 @@ AC_MSG_NOTICE([     Debug mode:        $with_debug])
 AC_MSG_NOTICE([     Step mode:         $with_step_mode])
 AC_MSG_NOTICE([     interrupt mode:    $with_interrupt])
 AC_MSG_NOTICE([     external mode:     $with_external])
+AS_IF([test x"$with_external" == xgalpy],
+      [AC_MSG_NOTICE([     Galpy version:     $GALPY_VERSION])])
 AC_MSG_NOTICE([     tidal tensor mode: $with_tidal_tensor])
 AC_MSG_NOTICE([     orbit mode:        $with_orbit])
 AC_MSG_NOTICE([     Using quad:        $use_quad])
